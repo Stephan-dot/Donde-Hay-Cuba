@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Función auxiliar para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Función auxiliar para verificar si el usuario es el propietario del documento
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Reglas para la colección de usuarios
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || 
+        (isAuthenticated() && 
+         request.resource.data.diff(resource.data).affectedKeys()
+         .hasOnly(['fcmToken', 'platform', 'lastUpdated']));
+      allow delete: if isOwner(userId);
+    }
+
+    // Reglas para la colección de reportes
+    match /reportes/{reporteId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        // Permitir actualización del propietario
+        resource.data.userId == request.auth.uid ||
+        // Permitir actualización de verificaciones y votantes
+        request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['verificaciones', 'votantes'])
+      );
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Reglas para la colección de comercios
+    match /comercio/{comercioId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        // Permitir actualización del propietario
+        resource.data.usuarioId == request.auth.uid ||
+        // Permitir actualización de campos específicos
+        request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['nombre', 'direccion', 'ubicacion'])
+      );
+      allow delete: if isAuthenticated() && resource.data.usuarioId == request.auth.uid;
+    }
+
+    // Reglas para la colección de notificaciones
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['read', 'status'])
+      );
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

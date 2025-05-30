@@ -1,0 +1,80 @@
+.container_from-register {
+    backdrop-filter: blur(4px);
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.from_register {
+    box-shadow: 0px 0px 2px 1px var(--azul-color);
+    width: 90%;
+    max-width: 400px;
+    height: 300px;
+    border-radius: 20px;
+    background-color: var(--blanco-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 20px;
+}
+
+.from_register > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.from_register > div > label {
+    font-weight: bold;
+    color: var(--azul-color);
+    margin-bottom: 8px;
+}
+
+.from_register > div > input {
+    border: 1px solid var(--azul-color);
+    outline: none;
+    background-color: transparent;
+    padding: 8px 15px;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 300px;
+    font-size: 16px;
+}
+
+.from_register > div > input:focus {
+    box-shadow: 0px 0px 2px 1px var(--azul-color);
+}
+
+.from_register > button {
+    background-color: var(--azul-color);
+    color: var(--blanco-color);
+    font-weight: bold;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.from_register > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.from_register > a {
+    color: var(--azul-color);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.from_register > a:hover {
+    text-decoration: underline;
+} 

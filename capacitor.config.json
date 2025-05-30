@@ -1,0 +1,26 @@
+{
+  "appId": "com.gameofthrones.app",
+  "appName": "Game of Thrones",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "release.keystore",
+      "keystorePassword": "mypassword",
+      "keystoreAlias": "release",
+      "keystoreAliasPassword": "mypassword",
+      "releaseType": "APK"
+    }
+  },
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    }
+  }
+}

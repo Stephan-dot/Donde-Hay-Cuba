@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "445112358147",
+    "project_id": "donde-hay-cuba",
+    "storage_bucket": "donde-hay-cuba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445112358147:android:8c9845fedb0be4a70d0536",
+        "android_client_info": {
+          "package_name": "com.dondehaycuba.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLMM4wXi4z3Y642UezikI-UhMdkxtpFXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
