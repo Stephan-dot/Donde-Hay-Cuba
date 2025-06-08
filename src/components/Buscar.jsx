@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import './Buscar.css';
@@ -12,7 +12,7 @@ function Buscar() {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Función para buscar reportes en Firestore
+
     const searchReportes = async () => {
         setLoading(true);
         try {
@@ -23,12 +23,10 @@ function Buscar() {
             }
 
             const response = await databases.listDocuments(
-                'dondehaycuba',
-                'reportes',
+                '6836a856002abc2c585d',
+                '6836a8d000394e3080c3',
                 queries
             );
-
-            // Filtrado adicional por término de búsqueda
             const filtered = response.documents.filter(item =>
                 item.producto.toLowerCase().includes(searchTerm.toLowerCase())
             );
@@ -36,16 +34,15 @@ function Buscar() {
             setResults(filtered.map(doc => ({
                 id: doc.$id,
                 ...doc,
-                ubicacion: doc.ubicacion || { lat: 0, lng: 0 }
+                ubicacion: [doc.ubicacion[0], doc.ubicacion[1]] 
             })));
         } catch (error) {
-            console.error("Error buscando reportes:", error);
+            showToast('Error al buscar reportes', 'error')
         } finally {
             setLoading(false);
         }
     };
 
-    // Búsqueda con debounce
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
             if (searchTerm.length > 0 || activeFilter !== "all") {
@@ -117,14 +114,15 @@ function Buscar() {
                                 <p className="result-price">${item.precio} CUP</p>
                                 {item.fecha && (
                                     <p className="result-date">
-                                        {new Date(item.fecha.seconds * 1000).toLocaleDateString()}
+                                        {new Date(item.fecha).toLocaleDateString() }                                   
+
                                     </p>
                                 )}
                             </div>
                             <div className="result-right">
                                 <FaMapMarkerAlt className="location-icon" />
                                 <span className="result-distance">
-                                    {item.ubicacion.lat.toFixed(2)}, {item.ubicacion.lng.toFixed(2)}
+                                    {item.ubicacion[0]}, {item.ubicacion[1]}
                                 </span>
                             </div>
                         </div>

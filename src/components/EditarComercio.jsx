@@ -1,85 +1,66 @@
-/*import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase-config";
+import { account, databases } from "../firebase-config";
 import './EditarReporte.css'
-function EditarComercio(){
-const { id } = useParams(); // Obtener el ID del reporte desde la URL
+//import {ToastContainer, toast } from "react-toastify";
+import { CustomToaster, showToast } from './CustomToast';
+//import "react-toastify/dist/ReactToastify.css";
+function EditarComercio() {
+    const { id } = useParams(); 
     const navigate = useNavigate();
-    const [message, setMessage] = useState("");
     const [form, setForm] = useState({
         nombre: "",
         direccion: "",
-        ubicacion: {
-            lat: "",
-            lng: ""
-        }
+        ubicacion: ["", ""] 
     });
-    const [error, setError] = useState("");
-        useEffect(() => {
-    if (error) {
-        const timer = setTimeout(() => {
-            setError(""); // Limpia el error después de 2 segundos
-        }, 2000);
-
-        return () => clearTimeout(timer); // Limpia el temporizador si el componente se desmonta
-    }
-    }, [error]);
-
-        useEffect(() => {
-    if (message) {
-        const timer = setTimeout(() => {
-            setMessage(""); // Limpia el error después de 2 segundos
-        }, 2000);
-
-        return () => clearTimeout(timer); // Limpia el temporizador si el componente se desmonta
-    }
-    }, [message]);
 
     useEffect(() => {
-        const fetchComercios = async () => {
+        const fetchComercio = async () => {
+            if (!id) return;
+            
             try {
-                const docRef = doc(db, "comercio", id);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    setForm({
-                        nombre: docSnap.data().nombre,
-                        direccion: docSnap.data().direccion,
-                        ubicacion: {
-                            lat: docSnap.data().ubicacion.lat,
-                            lng: docSnap.data().ubicacion.lng
-                        }
-                    });
-                } else {
-                    console.error("No se encontró el comercio.");
-                    setError("No se encontró el comercio.");
+                const currentUser = await account.get();
+                if (!currentUser) {
+                    showToast('No hay usuario logueado', 'error')
+                    return;
                 }
+
+                
+                const response = await databases.getDocument(
+                    '6836a856002abc2c585d', 
+                    '6836a924002f72431f73',
+                    id 
+                );
+                
+                setForm({
+                    nombre: response.nombre,
+                    direccion: response.direccion,
+                    ubicacion: response.ubicacion || ["", ""]
+                });
             } catch (error) {
-                console.error("Error al cargar el comercio:", error);
-                setError("Error al cargar el comercio.");
+                console.error("Error al obtener el comercio:", error);
+                showToast('Error al cargar el comrecio', 'error')
             }
         };
 
-        fetchComercios();
+        fetchComercio();
     }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === "lat" || name === "lng") {
-            setForm((prevForm) => ({
-                ...prevForm,
-                ubicacion: {
-                    ...prevForm.ubicacion,
-                    [name]: value
-                }
+        if (name === "lat") {
+            setForm(prev => ({
+                ...prev,
+                ubicacion: [value, prev.ubicacion[0]]
+            }));
+        } else if (name === "lng") {
+            setForm(prev => ({
+                ...prev,
+                ubicacion: [prev.ubicacion[1], value]
             }));
         } else {
-            setForm((prevForm) => ({
-                ...prevForm,
-                [name]: value
-            }));
+            setForm(prev => ({ ...prev, [name]: value }));
         }
     };
 
@@ -87,33 +68,36 @@ const { id } = useParams(); // Obtener el ID del reporte desde la URL
         e.preventDefault();
 
         try {
-            const docRef = doc(db, "comercio", id);
-            await updateDoc(docRef, {
-                nombre: form.nombre.trim(),
-                direccion: form.direccion,
-                ubicacion: {
-                    lat: parseFloat(form.ubicacion.lat),
-                    lng: parseFloat(form.ubicacion.lng)
+            const currentUser = await account.get();
+            
+            await databases.updateDocument(
+                '6836a856002abc2c585d', 
+                '6836a924002f72431f73',
+                id,
+                {
+                    direccion: form.direccion,
+                    nombre: form.nombre,
+                    ubicacion: [
+                        parseFloat(form.ubicacion[0]),
+                        parseFloat(form.ubicacion[1])
+                    ],
+                    userId: currentUser.$id,
+                    verificada: form.verificada || false
                 }
-            });
+            );
 
-            setMessage("Comercio actualizado con éxito");
-
-            // Retrasar la redirección para mostrar el mensaje
-            setTimeout(() => {
-                navigate("/list-comerc");
-            }, 2000); // Redirige después de 2 segundos
+            showToast('Comercio actualizado correctamente!', 'success')
+            setTimeout(() => navigate("/list-comerc"), 2000);
         } catch (error) {
-            console.error("Error al actualizar el comercio:", error);
-            setError("Error al actualizar el comercio.");
+            console.error("Error al guardar:", error);
+            showToast('Error al actualizar el comercio', 'error')
         }
     };
 
     return (
         <div className="editar-reporte-container">
-            {message && <p className="editar-reporte-message success" style={{ color: 'green' }}>{message}</p>}
-            <h1 className="editar-reporte-title">Editar Reporte</h1>
-            {error && <p className="editar-reporte-message error" style={{ color: "red" }}>{error}</p>}
+            <CustomToaster/> 
+            <h1 className="editar-reporte-title">Editar Comercio</h1>
             <form className="editar-reporte-form" onSubmit={handleSubmit}>
                 <div>
                     <label>Nombre:</label>
@@ -140,9 +124,10 @@ const { id } = useParams(); // Obtener el ID del reporte desde la URL
                     <input
                         type="number"
                         name="lat"
-                        value={form.ubicacion.lat}
+                        value={form.ubicacion[0]}
                         onChange={handleChange}
                         required
+                        step="any"
                     />
                 </div>
                 <div>
@@ -150,9 +135,10 @@ const { id } = useParams(); // Obtener el ID del reporte desde la URL
                     <input
                         type="number"
                         name="lng"
-                        value={form.ubicacion.lng}
+                        value={form.ubicacion[1]}
                         onChange={handleChange}
                         required
+                        step="any"
                     />
                 </div>
                 <button type="submit">Guardar Cambios</button>
@@ -164,4 +150,4 @@ const { id } = useParams(); // Obtener el ID del reporte desde la URL
     );
 }
 
-export default EditarComercio; */
+export default EditarComercio;

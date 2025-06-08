@@ -62,7 +62,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background 0.5s ease;
+    transition: all 0.5s ease;
 }
 
 .listar-reportes-actions button:hover {
@@ -74,4 +74,34 @@ body {
     margin-bottom: 16px;
     font-weight: 500;
     text-align: center;
+}
+
+.container_taost-dalete{
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 0 3px 0 #000;
+}
+.container_taost-dalete-title{
+    margin-bottom: 12px;
+}
+.container_taost-dalete-cuerpo{
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.taost_btn-confirmar{
+    padding: 6px 12px; 
+    background: #1a2533;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.taost_btn-eliminar{
+    padding: 6px 12px; 
+    background: #2d3e50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }

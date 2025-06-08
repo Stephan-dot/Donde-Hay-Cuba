@@ -1,12 +1,9 @@
 import './App.css';
-import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import image from './image/photo_2025-05-14_13-01-29.jpg';
-import Encabezado from './components/encabezado.jsx';
-import { ToastContainer, toast } from 'react-toastify';
 import { FaMapMarkedAlt, FaSearch, FaBell } from 'react-icons/fa';
-
+import { CustomToaster} from './components/CustomToast.jsx';
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const location = useLocation();
@@ -40,17 +37,12 @@ function App() {
       title: "Búsqueda Inteligente",
       description: "Busca productos específicos en toda Cuba",
       action: () => navigate('/Search')
-    },
-    {
-      icon: <FaBell size={40} />,
-      title: "Notificaciones",
-      description: "Mantente informado sobre nuevos productos",
-      action: () => navigate('/notifications')
     }
   ];
 
   return (
     <>
+      <CustomToaster/>
       {location.pathname === '/' && (
         <main className='main'>
           <div className="hero-section">
@@ -89,13 +81,13 @@ function App() {
           <div className="cta-section">
             <h2>¿Quieres contribuir con la comunidad?</h2>
             <p>Únete a nuestra red de colaboradores y ayuda a mantener la información actualizada</p>
-            <button className="cta-button" onClick={() => navigate('/register')}>
+            <button className="cta-button" onClick={() => navigate('/login')}>
               Registrarse Ahora
             </button>
           </div>
         </main>
       )}
-      {/* Aquí van tus <Routes> en main.jsx */}
+
     </>
   );
 }

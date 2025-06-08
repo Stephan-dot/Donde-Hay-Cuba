@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import {databases, account} from '../firebase-config'
 import { ID } from "appwrite";
 import './AddReportes.css'
-import { Query } from 'appwrite';
+import { CustomToaster, showToast } from './CustomToast';
+//import {ToastContainer, toast } from 'react-toastify';
 
 function AddCommerce(){
     const navigate = useNavigate();
@@ -11,47 +12,26 @@ function AddCommerce(){
     const [form, setForm] = useState({
         direccion: '', 
         nombre: '', 
-        ubicacion: {
-            lat: null,
-            lng: null
-        },
+        ubicacion: ["", ""],
         userId: '', 
         verificada: false 
     })
     const [error, setError] = useState('');
-    useEffect(() => {
-    if (error) {
-        const timer = setTimeout(() => {
-            setError(""); // Limpia el error después de 2 segundos
-        }, 2000);
 
-        return () => clearTimeout(timer); // Limpia el temporizador si el componente se desmonta
-    }
-    }, [error]);
-
-    useEffect(() => {
-    if (message) {
-        const timer = setTimeout(() => {
-            setMessage(""); // Limpia el mensaje después de 2 segundos
-        }, 2000);
-
-        return () => clearTimeout(timer); // Limpia el temporizador si el componente se desmonta
-    }
-    }, [message]);
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // Si el campo pertenece a "ubicacion", actualiza esa parte del estado
-        if (name === "lat" || name === "lng") {
+        if (name === "lat") {
             setForm({
                 ...form,
-                ubicacion: {
-                    ...form.ubicacion,
-                    [name]: value // Actualiza lat o lng
-                }
+                ubicacion: [value, form.ubicacion[1]] 
+            });
+        } else if (name === "lng") {
+            setForm({
+                ...form,
+                ubicacion: [form.ubicacion[0], value] 
             });
         } else {
-            // Para otros campos, actualiza directamente
             setForm({
                 ...form,
                 [name]: value
@@ -61,7 +41,7 @@ function AddCommerce(){
     
     const handleGeolocation = () => {
         if (!navigator.geolocation) {
-        setError("Tu navegador no soporta geolocalización");
+         showToast('Su dispositivo no soporta geolocalización', 'error')
         return;
         }
 
@@ -70,12 +50,14 @@ function AddCommerce(){
         (position) => {
             setForm({
             ...form,
-            lat: position.coords.latitude.toString(),
-            lng: position.coords.longitude.toString()
+            ubicacion: [
+                        position.coords.latitude.toString(),
+                        position.coords.longitude.toString()
+                    ]
             });
         },
         (err) => {
-            setError("No se pudo obtener tu ubicación: " + err.message);
+             showToast('No se pudo obtener su ubicación', 'error')
         }
         );
     };
@@ -85,19 +67,19 @@ function AddCommerce(){
         setError('');
 
         if (!form.direccion.trim()) {
-            setError("Debes introducir una direccion");
+            showToast('Debes introducir una direccion', 'error')
             console.log("Error: Dirección vacía");
             return;
         }
 
         if (!form.nombre.trim()) {
-            setError("Debes introducir un nombre");
+             showToast('Debes intrudicir un nombre', 'error')
             console.log("Error: Nombre vacío");
             return;
         }
 
-        if (!form.ubicacion.lat || !form.ubicacion.lng) {
-            setError("Debes proporcionar una ubicación");
+        if (!form.ubicacion[0] || !form.ubicacion[1]) {
+             showToast('Debes proporcionar una ubicacion', 'error')
             console.log("Error: Ubicación faltante");
             return;
         }
@@ -112,30 +94,26 @@ function AddCommerce(){
                 {
                     direccion: form.direccion,
                     nombre: form.nombre,
-                    ubicacion: {
-                        lat: parseFloat(form.ubicacion.lat),
-                        lng: parseFloat(form.ubicacion.lng)
-                    },
+                    ubicacion: [parseFloat(form.ubicacion[0]), parseFloat(form.ubicacion[1])],
                     userId: currentUser.$id,
                     verificada: form.verificada
                 }
             );
 
-            setMessage("Comercio añadido correctamente!");
-            setTimeout(() => navigate("/"), 2000);
+            showToast('Comercio añadido corectamente', 'success')
+            setTimeout(() => navigate("/list-comerc"), 2000);
         } catch (error) {
             console.error("Error al guardar:", error);
-            setError("Error al guardar el comercio: " + error.message);
+            showToast('Error al guardar el comercio'+error.message, 'error')
         }
     };
     
     return (
         <div className="add-report-container">
+            <CustomToaster/> 
             <h1 className="add-report-title">
                 Agregar Comercio
             </h1>
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            {error && <p style={{ color: 'red' }} className="error-text">{error}</p>}
             <form action="" onSubmit={handleSubmit} className="add-report-form">
                 <div className="form-group">
                     <label htmlFor="" className="form-label">Direccion: </label>
@@ -148,14 +126,14 @@ function AddCommerce(){
                 <div className="form-group">
                     <label htmlFor="" className="form-label">Ubicacion
                         <div className="location-container">
-                            <input   type="number" name="lat" value={form.ubicacion.lat || ''}  onChange={handleChange}  className="coord-input" placeholder="Latitud" step="any" required/>
-                            <input   type="number" name="lng" value={form.ubicacion.lng || ''}  onChange={handleChange}  className="coord-input"  placeholder="Longitud"  step="any" required/>
+                            <input   type="number" name="lat" value={form.ubicacion[0]}  onChange={handleChange}  className="coord-input" placeholder="Latitud" step="any" required/>
+                            <input   type="number" name="lng" value={form.ubicacion[1]}  onChange={handleChange}  className="coord-input"  placeholder="Longitud"  step="any" required/>
                             <button  className="geo-button" type="button" onClick={handleGeolocation}> Usar mi ubicación  </button>
                         </div>
                     </label>
                 </div>
                 <div className="button-group">
-                    <button type="submit" className="submit-button"  disabled={!form.direccion || !form.nombre || !form.ubicacion.lat || !form.ubicacion.lng }>  Enviar Comercio </button>
+                    <button type="submit" className="submit-button"  >  Enviar Comercio </button>
                     <button type="button"  onClick={() => navigate('/')}  className="cancel-button">Cancelar</button>
                 </div>
             </form>
@@ -163,4 +141,4 @@ function AddCommerce(){
     )
 }
 
-export default AddCommerce
+export default AddCommerce;

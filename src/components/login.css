@@ -1,6 +1,5 @@
 .container_from-login{
     backdrop-filter: blur(4px);
-    position: absolute;
     height: 100vh;
     width: 100%;
     display: flex;

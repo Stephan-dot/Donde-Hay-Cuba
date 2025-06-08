@@ -3,6 +3,7 @@ import './login.css';
 import './Register.css';
 import { useNavigate } from "react-router-dom";
 import { account } from "../firebase-config"
+import {showToast } from './CustomToast';
 function Login() {
     const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState(""); 
@@ -18,14 +19,13 @@ function Login() {
     setError("");
 
     if (!email || !password) {
-        setError("Email y contraseña son requeridos");
+        showToast('Email y contraseña son requeridos', 'error')
         return;
     }
 
     try {
-        // Primero, intenta crear la sesión
-        await account.createEmailPasswordSession(email, password);  // Usa `createEmailSession` en lugar de `createSession`
-        setMessage('Autenticación exitosa');
+        await account.createEmailPasswordSession(email, password); 
+        showToast('Autenticacion exitosa', 'success', {duration: 10000})
         setTimeout(() => navigate("/"), 3000);
     } catch (error) {
         setError(getErrorMessage(error));
@@ -36,47 +36,38 @@ function Login() {
     e.preventDefault();
     try {
         await account.create(
-            'unique',  // ID único generado automáticamente
-            email,       // Email del usuario
-            password     // Contraseña (mínimo 8 caracteres)
+            `${Math.random()}`, 
+            email,     
+            password     
         );
-        setMessage('¡Registro exitoso! Inicia sesión.');
+        showToast('Registro exitoso', 'success')
     } catch (error) {
-        setError(getErrorMessage(error.message)); // Muestra el error real
+        setError(getErrorMessage(error.message)); 
     }
 };
     
     const getErrorMessage = (error) => {
-    switch (error.type) {
-        case 'user_invalid_credentials':
-            return "Email o contraseña incorrectos";
-        case 'user_not_found':
-            return "Usuario no registrado";
-        case 'general_argument_invalid':
-            return "Datos inválidos";
-        default:
-            console.error("Error detallado:", error); // Depuración
-            return "Error al iniciar sesión. Intenta nuevamente.";
-    }
+  switch (error.type) {
+    case 'user_invalid_credentials':
+      return 'Email o contraseña incorrectos';
+    case 'user_not_found':
+      return 'Usuario no registrado';
+    case 'general_argument_invalid':
+      return 'Datos inválidos';
+    default:
+      console.error("Error detallado:", error);
+      return 'Error al iniciar sesión, intente nuevamente';
+  }
 };
 
-    useEffect(() => {
-        if (message || error) {
-            const timer = setTimeout(() => {
-                setMessage('');
-                setError('');
-            }, 2000);
-            return () => clearTimeout(timer);
-        }
-    }, [message, error]);
+
 
     return (
         <div className="container_from-login">
-        
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {!isLoggedIn ? (
+            
+            {!isLoggedIn ?    (
                 <form onSubmit={handleLogin} className="from_Login">
+                    
                 <div>
                     <label htmlFor="">
                         Email:
@@ -117,7 +108,7 @@ function Login() {
             </form>
             ): (
                 <form onSubmit={handleRegister} className="from_register">
-                
+
                 <div>
                     <label htmlFor="">Email :</label>
                     <input 
@@ -144,7 +135,7 @@ function Login() {
                         
                     />
                 </div>
-                <button type="submit">
+                <button type="submit" >
                    Registrarse
                 </button>
                 <label 

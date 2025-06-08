@@ -8,26 +8,7 @@ import { CiMenuKebab } from 'react-icons/ci';
 import { LuLogOut, LuLogIn } from 'react-icons/lu';
 import { MdClose, MdOutlineHelp } from 'react-icons/md';
 
-/*const guardarTokenEnFirestore = async (token) => {
-    try {
-        if (!auth.currentUser) {
-        throw new Error("Usuario no autenticado");
-        }
-
-        await setDoc(doc(db, "users", auth.currentUser.uid), {
-        fcmToken: token,
-        lastUpdated: serverTimestamp()
-        }, { merge: true });
-
-        console.log("Token guardado en Firestore");
-    } catch (error) {
-        console.error("Error guardando token:", error);
-        throw error;
-    }
-};
-*/
 const Encabezado = () => {
-    //const [notificationEnabled, setNotificationEnabled] = useState(false);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const iconClick = useRef(null)
@@ -48,8 +29,6 @@ const Encabezado = () => {
                 setUser(currentUser);
             } catch (error) {
                 setUser(null);
-                // Opcional: redirige al login si no está autenticado
-                // navigate('/login');
             }
         };
 
@@ -57,8 +36,7 @@ const Encabezado = () => {
     }, [navigate]);
 
     const handleClick = ()=>{
-        if(element.current){
-            console.log("Elemento en el dom"); 
+        if(element.current){ 
             if( element.current.style.display != 'flex'){
                 element.current.style.display = 'flex';
             }else{
@@ -71,7 +49,6 @@ const Encabezado = () => {
 
     const handleClick1 = ()=>{
         if(element1.current){
-            console.log("Elemento en el dom"); 
             if( element1.current.style.display != 'flex'){
                 element1.current.style.display = 'flex';
             }else{
