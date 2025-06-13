@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Función auxiliar para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Función auxiliar para verificar si el usuario es el propietario del archivo
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Reglas para las imágenes de reportes
+    match /reportes/{userId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) 
+        && request.resource.size < 5 * 1024 * 1024 // Máximo 5MB
+        && request.resource.contentType.matches('image/.*'); // Solo imágenes
+    }
+  }
+} 

@@ -1,0 +1,143 @@
+*{
+    margin: 0;
+    box-sizing: border-box;
+}
+:root{
+    --azul-color:#144076;
+    --negro-color:#000; 
+    --blanco-color: #f0eadc; 
+}
+#root{
+    height: 100%;
+    width: 100%;
+}
+body {
+    font-family: Arial, sans-serif;
+}
+header{
+    width: 100vw;
+    height: 10%;
+    position: absolute;
+    top: 0;
+    box-shadow: -5px 0px 2px 0px #000;
+    background: rgb(33 53 71);
+    z-index: 1;
+}
+.navbar_titulo{
+    font-size: 1rem;
+}
+nav{
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+nav>div{
+    width: 70%;
+    height: 100%;
+    display: flex; 
+    justify-content: space-evenly;
+    align-items: center;
+}
+.navbar_acces{
+    width: 40%;
+}
+.navbar_encabezado{
+    width: 60%;
+}
+.navbar_acces>a{
+    color: aliceblue;
+}
+.navbar_acces>input{
+    display: none;
+}
+.navbar_acces>label{
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.container_oculto{
+    display: none;
+}
+.ul_oculta{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0;
+    height: 90%;
+    width: 90%;
+    border-radius: 20px;
+    background-color: var(--blanco-color);
+    box-shadow: 0px 0px 2px 1px var(--azul-color);
+    backdrop-filter: none;
+}
+.ul_oculta> li{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.navbar_acces>#menu:checked ~ .container_oculto{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    background-color:transparent; 
+    backdrop-filter: blur(10px);
+}
+.cerrar{
+    position: absolute;
+    top: 50px;
+    right: 40px;
+}
+.ul_oculta-item{
+    list-style: none;
+}
+.ul_oculta-item>a{
+    color: var(--azul-color);
+    font-size: 1.5rem;
+}
+.logo{
+    height: 50px;
+    width: 80px;
+    padding: 0;
+    border-radius: 50%;
+    margin: 0 5px 0 5px;
+}
+.nav_button{
+    background: transparent;
+    padding: 5px 5px;
+}
+.nav_button:hover {
+    border-color: var(--azul-color);
+    background-color: rgba(119, 136, 153, 0.445);
+}
+.nav_select{
+    font-size: 1.5rem;
+    border: none;
+    color: var(--azul-color);
+}
+
+.nav_desplegable{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.nav_desplegable>*{
+    font-size: 1rem;
+}
+.notificaciones{
+background: #4CAF50;
+color: var(--azul-color);
+border: none;
+border-radius: 4px;
+background-color: transparent;
+font-size:1.5rem;
+display: flex;
+justify-content: center;
+align-items: center;
+}

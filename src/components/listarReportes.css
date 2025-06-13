@@ -1,0 +1,107 @@
+/* Fondo general */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Contenedor principal del componente */
+.listar-reportes-container {
+    margin-top: 70px; /* Ajusta según la altura de tu header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Tabla centrada y estilizada */
+.listar-reportes-table {
+    border-radius: 10px;
+    box-shadow: 0 0px 3px 0px rgba(0, 0, 0, 0.822);
+    margin: 0 auto;
+    width: 90%;
+    max-width: 900px;
+    border-collapse: collapse;
+    overflow: hidden;
+}
+
+.listar-reportes-table th, 
+.listar-reportes-table td {
+    padding: 15px 8px;
+    text-align: center;
+}
+
+.listar-reportes-table th {
+    background-color: #2d3e50;
+    color: #fff;
+    font-weight: 600;
+}
+
+.listar-reportes-table tr:nth-child(even) {
+    background-color: rgba(66, 66, 66, 0.9);
+}
+
+.listar-reportes-table tr:hover {
+    background-color: lightslategray;
+}
+
+/* Botones */
+.listar-reportes-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.listar-reportes-actions button {
+    background-color: #2d3e50;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.5s ease;
+}
+
+.listar-reportes-actions button:hover {
+    background-color: #1a2533;
+}
+
+/* Mensajes */
+.listar-reportes-message {
+    margin-bottom: 16px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.container_taost-dalete{
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 0 3px 0 #000;
+}
+.container_taost-dalete-title{
+    margin-bottom: 12px;
+}
+.container_taost-dalete-cuerpo{
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.taost_btn-confirmar{
+    padding: 6px 12px; 
+    background: #1a2533;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.taost_btn-eliminar{
+    padding: 6px 12px; 
+    background: #2d3e50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
